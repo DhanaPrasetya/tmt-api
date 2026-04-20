@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Repositories\Implementation;
+
+use App\Models\Links;
+use App\Repositories\Interfaces\RepositoryInterface;
+use Exception;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
+
+
+class EloquentImplementation implements RepositoryInterface
+{
+    public function createShortedLink(string $original_url, string $short_url): Links
+    {
+        try {
+            return Links::create([
+                'original_url' => $original_url,
+                'short_url' => $short_url
+            ]);
+        } catch (QueryException $e) {
+            echo "eloquent implementation\n";
+            dd($e->getMessage()); // quick print + stop (debug only)
+
+            Log::error('Link creation failed: ' . $e->getMessage());
+            throw new Exception('Error creating link: ' . $e->getMessage());
+        }
+    }
+
+    public function getRedirectedLink(string $short_url): ?Links
+    {
+        try {
+            return Links::where('short_url', $short_url)->first();
+        } catch (Exception $e) {
+            throw new Exception('Error retrieving link: ' . $e->getMessage());
+        }
+    }
+}
