@@ -2,7 +2,7 @@
 
 namespace App\UseCases;
 
-use App\Repositories\Interfaces\RepositoryInterface;
+use App\Infrastructure\Repository\Interface\RepositoryInterface;
 
 class CreateShortLink
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Interfaces;
+namespace App\Infrastructure\Repository\Interface;
 
 use App\Models\Links;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Repositories\Implementation;
+namespace App\Infrastructure\Repository\Eloquent;
 
 use App\Models\Links;
-use App\Repositories\Interfaces\RepositoryInterface;
+use App\Infrastructure\Repository\Interface\RepositoryInterface;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;

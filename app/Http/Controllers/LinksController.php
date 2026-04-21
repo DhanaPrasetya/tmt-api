@@ -6,11 +6,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\UseCases\CreateShortLink;
 use Illuminate\Support\Facades\Log;
+use App\Utils\Response\StandarizedResponse;
 
 class LinksController
 {
 
-    public function shorten(Request $request, CreateShortLink $createShortLink): JsonResponse // dependency injection
+    public function shorten(Request $request, CreateShortLink $createShortLink) // dependency injection
     {
         try {
             $link = $createShortLink->create( // calling create method
@@ -18,13 +19,9 @@ class LinksController
                 $request->input('short_url')
             );
 
-            $response = (object) [
-                'message' => 'Short link created successfully',
-                'url' => $link->short_url
-            ];
+            $responseData = $link->short_url;
 
-
-            return response()->json($response, 201);
+            return StandarizedResponse::standarized_response(201, $responseData);
         } catch (\Throwable $e) {
             Log::error('Link creation failed', [
                 'message' => $e->getMessage(),
