@@ -2,19 +2,17 @@
 
 namespace App\Infrastructure\Repository\Eloquent;
 
-use App\Models\Links;
+use App\Models\Urls;
 use App\Infrastructure\Repository\Interface\RepositoryInterface;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\UniqueConstraintViolationException;
-use Illuminate\Support\Facades\Log;
-
 
 class EloquentImplementation implements RepositoryInterface
 {
-    public function createShortedLink(string $original_url, string $short_url): Links
+    public function createShortedLink(string $original_url, string $short_url): Urls
     {
         try {
-            return Links::create([
+            return Urls::create([
                 'original_url' => $original_url,
                 'short_url' => $short_url
             ]);
@@ -24,10 +22,10 @@ class EloquentImplementation implements RepositoryInterface
         }
     }
 
-    public function getRedirectedLink(string $short_url): ?Links
+    public function getRedirectedLink(string $short_url): ?Urls
     {
         try {
-            return Links::where('short_url', $short_url)->first();
+            return Urls::where('short_url', $short_url)->first();
         } catch (QueryException $e) {
             throw $e;
         }

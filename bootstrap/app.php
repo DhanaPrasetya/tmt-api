@@ -7,6 +7,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request; // Use the Laravel Request for better compatibility
 use Illuminate\Support\Facades\Log;
 use App\Utils\Response\StandarizedResponse;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -18,9 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) { // global middleware configuration
         $middleware->append(\App\Http\Middleware\ApiLoggerMiddleware::class);
-        $middleware->prepend(App\Http\Middleware\ForceJsonResponse::class);
     })
     ->withExceptions(function ($exceptions) {
+        $exceptions->stopIgnoring(ValidationException::class);
+
         $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
             return true;
         });
@@ -30,6 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $statusCode = match (true) {
                 $e instanceof HttpExceptionInterface => $e->getStatusCode(),
                 $e instanceof UniqueConstraintViolationException => 409,
+                $e instanceof ValidationException => 422,
                 $e instanceof QueryException => 500,
                 default => 500,
             };

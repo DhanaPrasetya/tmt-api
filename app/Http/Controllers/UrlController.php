@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\UseCases\CreateShortLink;
+use App\UseCases\CreateShortUrl;
 use App\Utils\Response\StandarizedResponse;
+use App\Http\Requests\CreateShortUrlValidator;
 
 class UrlController
 {
 
-    public function shorten(Request $request, CreateShortLink $createShortLink) // dependency injection
+    public function shorten(CreateShortUrlValidator $request, CreateShortUrl $createShortUrl) // form validation & use cases dependency injection
     {
-        $link = $createShortLink->create( // calling create method
-            $request->input('original_url'),
-            $request->input('short_url')
+        $validatedRequest = $request->validated();
+
+        $link = $createShortUrl->create(
+            $validatedRequest['original_url'],
+            $validatedRequest['short_url']
         );
 
         $responseObject = [

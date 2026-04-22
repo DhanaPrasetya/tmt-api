@@ -4,7 +4,7 @@ namespace App\UseCases;
 
 use App\Infrastructure\Repository\Interface\RepositoryInterface;
 
-class CreateShortLink
+class CreateShortUrl
 {
     public function __construct(protected RepositoryInterface $links) {} // dependency injection
 

@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class Links extends Model
+class Urls extends Model
 {
-    /** @use HasFactory<\Database\Factories\LinksFactory> */
+    /** @use HasFactory<\Database\Factories\UrlsFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -21,7 +21,7 @@ class Links extends Model
         'short_url',
     ];
 
-    protected $table = 'links';
+    protected $table = 'urls'; // table name
 
     /**
      * Get the attributes that should be cast.
