@@ -4,18 +4,19 @@ namespace App\Utils\Response;
 
 class StandarizedResponse
 {
-    public static function standarized_response($status_code, $data)
+    public static function standarized_response($responseObject)
     {
         $message = 'Success';
 
-        if ($status_code >= 400) {
+        if ($responseObject['code'] >= 400) {
             $message = 'Failed';
         }
 
         return response()->json([
-            'status' => $status_code,
-            'message' => $message,
-            'data' => $data,
-        ], $status_code);
+            'code' => $responseObject['code'],
+            'status' => $message,
+            'message' => $responseObject['message'],
+            'data' => $responseObject['data'],
+        ], $responseObject['code']);
     }
 }

@@ -4,8 +4,8 @@ namespace App\Infrastructure\Repository\Eloquent;
 
 use App\Models\Links;
 use App\Infrastructure\Repository\Interface\RepositoryInterface;
-use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Log;
 
 
@@ -18,12 +18,9 @@ class EloquentImplementation implements RepositoryInterface
                 'original_url' => $original_url,
                 'short_url' => $short_url
             ]);
-        } catch (QueryException $e) {
-            echo "eloquent implementation\n";
-            dd($e->getMessage()); // quick print + stop (debug only)
+        } catch (UniqueConstraintViolationException $e) {
 
-            Log::error('Link creation failed: ' . $e->getMessage());
-            throw new Exception('Error creating link: ' . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -31,8 +28,8 @@ class EloquentImplementation implements RepositoryInterface
     {
         try {
             return Links::where('short_url', $short_url)->first();
-        } catch (Exception $e) {
-            throw new Exception('Error retrieving link: ' . $e->getMessage());
+        } catch (QueryException $e) {
+            throw $e;
         }
     }
 }
