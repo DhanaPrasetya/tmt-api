@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\UseCases\CreateShortUrl;
 use App\Utils\Response\StandarizedResponse;
 use App\Http\Requests\CreateShortUrlValidator;
+use App\Http\Requests\GetOriginalUrlValidator;
+use App\UseCases\GetOriginalUrl;
 
 class UrlController
 {
@@ -13,7 +15,7 @@ class UrlController
     {
         $validatedRequest = $request->validated();
 
-        $link = $createShortUrl->create(
+        $responseData = $createShortUrl->create(
             $validatedRequest['original_url'],
             $validatedRequest['short_url']
         );
@@ -21,14 +23,24 @@ class UrlController
         $responseObject = [
             'code' => 201,
             'message' => 'URL shortened successfully.',
-            'data' => $link->short_url,
+            'data' => $responseData,
         ];
 
         return StandarizedResponse::standarized_response($responseObject);
     }
 
-    // public function short_link(string $id): JsonResponse
-    // {
-    //     return response()->json();
-    // }
+    public function get_original_url(GetOriginalUrlValidator $request, GetOriginalUrl $getOriginalUrl) // form validation & use cases dependency injection
+    {
+        $validatedRequest = $request->validated();
+
+        $responseData = $getOriginalUrl->get($validatedRequest['short_url']);
+
+        $responseObject = [
+            'code' => 200,
+            'message' => 'Original URL retrieved successfully.',
+            'data' => $responseData,
+        ];
+
+        return StandarizedResponse::standarized_response($responseObject);
+    }
 }

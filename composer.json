@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "link-shortener/link-shortener",
+    "name": "url-shortener/url-shortener",
     "type": "project",
-    "description": "Link shortener SaaS, build on Laravel framework.",
+    "description": "Url shortener SaaS, build on Laravel framework.",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {

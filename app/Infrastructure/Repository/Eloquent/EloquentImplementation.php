@@ -9,7 +9,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
 
 class EloquentImplementation implements RepositoryInterface
 {
-    public function createShortedLink(string $original_url, string $short_url): Urls
+    public function createShortedUrl(string $original_url, string $short_url): Urls
     {
         try {
             return Urls::create([
@@ -17,15 +17,14 @@ class EloquentImplementation implements RepositoryInterface
                 'short_url' => $short_url
             ]);
         } catch (UniqueConstraintViolationException $e) {
-
             throw $e;
         }
     }
 
-    public function getRedirectedLink(string $short_url): ?Urls
+    public function getOriginalUrl(string $short_url): ?Urls
     {
         try {
-            return Urls::where('short_url', $short_url)->first();
+            return Urls::where('short_url', $short_url)->first(['original_url']);
         } catch (QueryException $e) {
             throw $e;
         }

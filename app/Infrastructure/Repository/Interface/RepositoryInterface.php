@@ -6,6 +6,6 @@ use App\Models\Urls;
 
 interface RepositoryInterface
 {
-    public function createShortedLink(string $original_url, string $short_url): Urls;
-    public function getRedirectedLink(string $short_url): ?Urls;
+    public function createShortedUrl(string $original_url, string $short_url): Urls;
+    public function getOriginalUrl(string $short_url): ?Urls;
 }

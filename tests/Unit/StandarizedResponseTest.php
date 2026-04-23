@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use App\Utils\Response\StandarizedResponse;
+use Tests\TestCase;
 
 class StandarizedResponseTest extends TestCase
 {
@@ -18,12 +18,13 @@ class StandarizedResponseTest extends TestCase
             'data' => ['id' => 123]
         ];
 
-        $test = StandarizedResponse::standarized_response($responseObject);
+        $jsonResponse = StandarizedResponse::standarized_response($responseObject);
+        $payload = $jsonResponse->getData(true);
 
-        $this->assertEquals(200, $test['code']);
-        $this->assertEquals('Operation successful', $test['message']);
-        $this->assertIsArray($test['data']);
-        $this->assertEquals(123, $test['data']['id']);
+        $this->assertEquals(200, $payload['code']);
+        $this->assertEquals('Operation successful', $payload['message']);
+        $this->assertIsArray($payload['data']);
+        $this->assertEquals(123, $payload['data']['id']);
     }
 
     public function test_failed_response(): void
@@ -34,10 +35,11 @@ class StandarizedResponseTest extends TestCase
             'data' => null
         ];
 
-        $test = StandarizedResponse::standarized_response($responseObject);
+        $jsonResponse = StandarizedResponse::standarized_response($responseObject);
+        $payload = $jsonResponse->getData(true);
 
-        // $this->assertEquals(400, $responseObject['code']);
-        // $this->assertEquals('Operation failed', $responseObject['message']);
-        // $this->assertNull($responseObject['data']);
+        $this->assertEquals(400, $payload['code']);
+        $this->assertEquals('Operation failed', $payload['message']);
+        $this->assertNull($payload['data']);
     }
 }

@@ -10,11 +10,15 @@ class CreateShortUrl
 
     public function create(string $original_url, string $short_url)
     {
-        $link = $this->links->createShortedLink(
+        $dataObject = $this->links->createShortedUrl(
             $original_url,
             $short_url
         );
 
-        return $link;
+        $dataObjectStripped = [
+            'short_url' => $dataObject->short_url
+        ];
+
+        return $dataObjectStripped;
     }
 }

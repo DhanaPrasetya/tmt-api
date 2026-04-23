@@ -7,8 +7,10 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request; // Use the Laravel Request for better compatibility
 use Illuminate\Support\Facades\Log;
 use App\Utils\Response\StandarizedResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -31,6 +33,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
             $statusCode = match (true) {
                 $e instanceof HttpExceptionInterface => $e->getStatusCode(),
+                $e instanceof NotFoundHttpException => 404,
+                $e instanceof ModelNotFoundException => 404,
                 $e instanceof UniqueConstraintViolationException => 409,
                 $e instanceof ValidationException => 422,
                 $e instanceof QueryException => 500,
@@ -54,13 +58,32 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (UniqueConstraintViolationException $e) {
             $responseObject = [
                 'code' => 409,
-                'message' => 'Already exists.',
+                'message' => 'Already exists',
                 'data' => null,
             ];
 
             return StandarizedResponse::standarized_response($responseObject);
         });
+        // Route not found error response
+        $exceptions->render(function (NotFoundHttpException $e) {
+            $responseObject = [
+                'code' => 404,
+                'message' => 'Route not found',
+                'data' => null,
+            ];
 
+            return StandarizedResponse::standarized_response($responseObject);
+        });
+        // Data not found error response
+        $exceptions->render(function (ModelNotFoundException $e) {
+            $responseObject = [
+                'code' => 404,
+                'message' => 'Data not found',
+                'data' => null,
+            ];
+
+            return StandarizedResponse::standarized_response($responseObject);
+        });
         // Internal error response
         $exceptions->render(function (QueryException $e, Request $request) {
 
