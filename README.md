@@ -38,6 +38,7 @@ Take Me To - API is a minimalist API built on Laravel 12 to handle Take Me To Ur
 
 ## API Dir Structure
 
+```
 ├── Http/
 │ ├── Controllers/
 │ │ └── UrlController.php
@@ -63,3 +64,4 @@ Take Me To - API is a minimalist API built on Laravel 12 to handle Take Me To Ur
 └── Utils/
 └── Response/
 └── StandarizedResponse.php
+```
