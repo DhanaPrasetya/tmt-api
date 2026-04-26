@@ -9,7 +9,7 @@ class CreateShortenUrlTest extends TestCase
 {
     use RefreshDatabase; // Handle migratiin & transaction rollback automatically
 
-    public function test_success(): void
+    public function test_success_creating_short_url(): void
     {
         $response = $this->postJson('/api/shorten', [
             'original_url' => 'https://example.com',
@@ -29,20 +29,56 @@ class CreateShortenUrlTest extends TestCase
             ->assertJsonPath('status', 'Success');
     }
 
-    public function test_white_list(): void
+    public function test_bad_request_invalid_original_url(): void
     {
 
-        $originalUrl = 'https://example.com';
+        $originalUrl = 'nohttporhttps.com';
         $shortUrl = 'test';
 
-        $this->postJson('/api/shorten', [ // seeding
+        $response = $this->postJson('/api/shorten', [
             'original_url' => $originalUrl,
             'short_url' => $shortUrl
         ]);
 
-        $char = '@#$%^&*()_+|~=`{}[]:";\'<>?,./';
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'original_url'
+                ]
+            ]);
+    }
 
-        $response = $this->get('/api/?short_url=' . $char);
+    public function test_bad_request_too_long_original_url(): void
+    {
+
+        $originalUrl = 'https://' . str_repeat('a', 2049 - 8); // max 2048 chars
+        $shortUrl = 'test';
+
+        $response = $this->postJson('/api/shorten', [
+            'original_url' => $originalUrl,
+            'short_url' => $shortUrl
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure([
+                'message',
+                'errors' => [
+                    'original_url'
+                ]
+            ]);
+    }
+
+    public function test_bad_request_invalid_short_url(): void
+    {
+
+        $originalUrl = 'https://example.com';
+        $invalidChar = '@#$%^&*()_+|~=`{}[]:";\'<>?,./';
+
+        $response = $this->postJson('/api/shorten', [
+            'original_url' => $originalUrl,
+            'short_url' => $invalidChar
+        ]);
 
         $response->assertStatus(422)
             ->assertJsonStructure([
@@ -74,7 +110,7 @@ class CreateShortenUrlTest extends TestCase
     {
         $response = $this->postJson('/api/shorten', [
             'original_url' => 'https://example.com',
-            'short_url' => 'LoremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliquaUtenimadminimveniamquisnostrudexercitationullamcolaborisnisiutaliquipexeacommodoconsequatDuisautereprehenderitinfuturevelitesseillumdoloreeufugiatnullapar'
+            'short_url' => '' . str_repeat('a', 51) // max 50 chars
         ]);
 
         $response->assertStatus(422)
@@ -83,6 +119,31 @@ class CreateShortenUrlTest extends TestCase
                 'errors' => [
                     'short_url'
                 ]
+            ]);
+    }
+
+    public function test_short_url_already_exist(): void
+    {
+
+        $originalUrl = 'https://site.com';
+        $shortUrl = 'test';
+
+        $response = $this->postJson('/api/shorten', [ // seeding
+            'original_url' => $originalUrl,
+            'short_url' => $shortUrl
+        ]);
+
+        $response = $this->postJson('/api/shorten', [ // testing
+            'original_url' => $originalUrl,
+            'short_url' => $shortUrl
+        ]);
+
+        $response->assertStatus(409)
+            ->assertJsonStructure([
+                'code',
+                'status',
+                'message',
+                'data'
             ]);
     }
 }

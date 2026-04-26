@@ -36,16 +36,8 @@ class GetShortenUrlTest extends TestCase
             ->assertJsonPath('status', 'Success');
     }
 
-    public function test_bad_response(): void
+    public function test_too_few_short_url(): void
     {
-
-        $originalUrl = 'https://example.com';
-        $shortUrl = 'test';
-
-        $this->postJson('/api/shorten', [ // seeding
-            'original_url' => $originalUrl,
-            'short_url' => $shortUrl
-        ]);
 
         $tooFewShortUrl1 = 'in';
 
@@ -58,8 +50,12 @@ class GetShortenUrlTest extends TestCase
                     'short_url'
                 ]
             ]);
+    }
 
-        $tooLongShortUrl = 'testLoremipsumdolorsitametconsecteturadipiscingelit'; // 51 chars, exceeding the max length of 50
+    public function test_too_long_short_url(): void
+    {
+
+        $tooLongShortUrl = str_repeat('a', 51); // 51 chars, exceeding the max length of 50
 
         $response = $this->get('/api/?short_url=' . $tooLongShortUrl);
 
@@ -72,20 +68,12 @@ class GetShortenUrlTest extends TestCase
             ]);
     }
 
-    public function test_white_list(): void
+    public function test_invalid_short_url(): void
     {
 
-        $originalUrl = 'https://example.com';
-        $shortUrl = '#$%&*';
+        $invalidShortUrl = '#$%&*';
 
-        $this->postJson('/api/shorten', [ // seeding
-            'original_url' => $originalUrl,
-            'short_url' => $shortUrl
-        ]);
-
-        $tooFewShortUrl1 = 'in';
-
-        $response = $this->get('/api/?short_url=' . $tooFewShortUrl1);
+        $response = $this->get('/api/?short_url=' . $invalidShortUrl);
 
         $response->assertStatus(422)
             ->assertJsonStructure([
@@ -99,16 +87,7 @@ class GetShortenUrlTest extends TestCase
     public function test_not_found(): void
     {
 
-        $originalUrl = 'https://example.com';
-        $shortUrl = 'test';
         $notFoundShortUrl = 'non-existent';
-
-
-        $this->postJson('/api/shorten', [ // seeding
-            'original_url' => $originalUrl,
-            'short_url' => $shortUrl
-        ]);
-
 
         $response = $this->get('/api/?short_url=' . $notFoundShortUrl);
 
