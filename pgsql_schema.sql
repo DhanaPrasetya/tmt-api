@@ -1,7 +1,7 @@
 create table urls (
     id serial primary key,
     original_url text not null,
-    short_url varchar(255) not null unique,
+    short_url varchar(50) not null unique,
     created_at timestamp with time zone default now()
 )
 

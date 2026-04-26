@@ -14,7 +14,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php', // for frontend routes (unused)
         api: __DIR__ . '/../routes/api.php', // for API routes
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
@@ -64,23 +63,22 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return StandarizedResponse::standarized_response($responseObject);
         });
-        // Route not found error response
+        // Data & route not found error response
         $exceptions->render(function (NotFoundHttpException $e) {
-            $responseObject = [
-                'code' => 404,
-                'message' => 'Route not found',
-                'data' => null,
-            ];
-
-            return StandarizedResponse::standarized_response($responseObject);
-        });
-        // Data not found error response
-        $exceptions->render(function (ModelNotFoundException $e) {
-            $responseObject = [
-                'code' => 404,
-                'message' => 'Data not found',
-                'data' => null,
-            ];
+            // Check if the previous exception is ModelNotFoundException
+            if ($e->getPrevious() instanceof ModelNotFoundException) {
+                $responseObject = [
+                    'code' => 404,
+                    'message' => 'Data not found',
+                    'data' => null,
+                ];
+            } else {
+                $responseObject = [
+                    'code' => 404,
+                    'message' => 'Route not found',
+                    'data' => null,
+                ];
+            }
 
             return StandarizedResponse::standarized_response($responseObject);
         });

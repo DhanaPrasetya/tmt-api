@@ -24,7 +24,7 @@ class CreateShortUrlValidator extends FormRequest
     {
         return [
             'original_url' => 'required|url|max:2048',
-            'short_url'    => 'required|string|alpha_dash|min:3|max:255',
+            'short_url'    => 'required|string|alpha_dash|min:3|max:50',
         ];
     }
 }

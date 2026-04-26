@@ -3,6 +3,7 @@
 namespace App\UseCases;
 
 use App\Infrastructure\Repository\Interface\RepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GetOriginalUrl
 {
@@ -10,6 +11,12 @@ class GetOriginalUrl
 
     public function get(string $short_url)
     {
-        return $this->links->getOriginalUrl($short_url);
+        $queryData = $this->links->getOriginalUrl($short_url);
+
+        if (!$queryData) {
+            throw new ModelNotFoundException;
+        }
+
+        return $queryData;
     }
 };

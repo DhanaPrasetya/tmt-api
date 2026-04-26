@@ -22,7 +22,7 @@
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_STORE" value="array"/>
-        <!-- postgre and stored in memory for testing purpose -->
+        <!-- for testing purpose, unused after env test -->
         <env name="DB_CONNECTION" value="pgsql"/>
         <env name="DB_DATABASE" value="test_link_shortener"/>
         <env name="DB_USERNAME" value="postgres"/>
