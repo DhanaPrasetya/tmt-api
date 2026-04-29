@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Infrastructure\Repository\Eloquent\EloquentImplementation;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Tests\TestCase;
 use Illuminate\Database\QueryException;
 
