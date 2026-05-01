@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\ApiLoggerMiddleware;
+use App\Http\Middleware\Cors;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Application;
@@ -19,7 +21,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) { // global middleware configuration
-        $middleware->append(\App\Http\Middleware\ApiLoggerMiddleware::class);
+        $middleware->api(append: [
+            ApiLoggerMiddleware::class,
+        ]);
+        $middleware->api([
+            Cors::class,
+        ]);
     })
     ->withExceptions(function ($exceptions) {
         $exceptions->stopIgnoring(ValidationException::class);
