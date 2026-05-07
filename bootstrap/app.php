@@ -64,7 +64,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (UniqueConstraintViolationException $e) {
             $responseObject = [
                 'code' => 409,
-                'message' => 'The short URL already exists',
+                'message' => 'The same custom alias already exists',
                 'data' => null,
             ];
 

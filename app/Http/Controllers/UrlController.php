@@ -17,7 +17,7 @@ class UrlController
 
         $responseData = $createShortUrl->create(
             $validatedRequest['original_url'],
-            $validatedRequest['short_url']
+            $validatedRequest['custom_alias']
         );
 
         $responseObject = [
