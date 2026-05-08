@@ -33,7 +33,7 @@ class UrlController
     {
         $validatedRequest = $request->validated();
 
-        $responseData = $getOriginalUrl->get($validatedRequest['short_url']);
+        $responseData = $getOriginalUrl->get($validatedRequest['custom_alias']);
 
         $responseObject = [
             'code' => 200,

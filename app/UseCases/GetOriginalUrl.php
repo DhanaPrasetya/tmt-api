@@ -10,24 +10,24 @@ class GetOriginalUrl
 {
     public function __construct(protected RepositoryInterface $links, protected CacheInterface $cache) {} // dependency injection
 
-    public function get(string $short_url)
+    public function get(string $custom_alias)
     {
 
-        $cachedUrl = $this->cache->getCachedUrl($short_url);
+        $cachedCustomAlias = $this->cache->getCachedUrl($custom_alias);
 
-        if ($cachedUrl) {
-            $this->cache->setCacheUrl($cachedUrl, $short_url); // Refresh cache TTL
-            $objectResponse = (object) ['original_url' => $cachedUrl]; // Create an object to match the expected return type
+        if ($cachedCustomAlias) {
+            $this->cache->setCacheUrl($cachedCustomAlias, $custom_alias); // Refresh cache TTL
+            $objectResponse = (object) ['original_url' => $cachedCustomAlias]; // Create an object to match the expected return type
             return $objectResponse;
         }
 
-        $queryData = $this->links->getOriginalUrl($short_url); // hold original url
+        $queryData = $this->links->getOriginalUrl($custom_alias); // hold original url
 
         if (!$queryData) {
             throw new ModelNotFoundException;
         }
 
-        $this->cache->setCacheUrl($queryData->original_url, $short_url);
+        $this->cache->setCacheUrl($queryData->original_url, $custom_alias);
 
         return $queryData;
     }

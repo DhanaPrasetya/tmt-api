@@ -13,13 +13,13 @@ class CacheTest extends TestCase
         $cache = new RedisImplementation();
 
         $originalUrl = 'https://url1.com';
-        $shortUrl = 'thisIsShortUrlCacheTest';
+        $custom_alias = 'thisIsShortUrlCacheTest';
 
         // Set cache
-        $cache->setCacheUrl($originalUrl, $shortUrl);
+        $cache->setCacheUrl($originalUrl, $custom_alias);
 
         // Get cache
-        $cachedUrl = $cache->getCachedUrl($shortUrl);
+        $cachedUrl = $cache->getCachedUrl($custom_alias);
         $this->assertEquals($originalUrl, $cachedUrl);
 
         $cache->flushAllCache(); // Clear cache after test

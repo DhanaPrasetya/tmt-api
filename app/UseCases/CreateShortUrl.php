@@ -15,10 +15,8 @@ class CreateShortUrl
             $custom_alias
         );
 
-        $frontendUrl = env('FRONTEND_URL', 'http://localhost');
-
         $dataObjectStripped = [
-            'short_url' => "{$frontendUrl}/{$dataObject->short_url}"
+            'custom_alias' => $dataObject->custom_alias
         ];
 
         return $dataObjectStripped;

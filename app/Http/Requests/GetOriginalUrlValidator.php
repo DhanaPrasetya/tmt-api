@@ -23,7 +23,7 @@ class GetOriginalUrlValidator extends FormRequest
     public function rules(): array
     {
         return [
-            'short_url'    => 'required|string|alpha_dash|min:3|max:50',
+            'custom_alias'    => 'required|string|alpha_dash|min:3|max:50',
         ];
     }
 

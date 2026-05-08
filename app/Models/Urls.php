@@ -18,7 +18,7 @@ class Urls extends Model
      */
     protected $fillable = [
         'original_url',
-        'short_url',
+        'custom_alias',
     ];
 
     protected $table = 'urls'; // table name

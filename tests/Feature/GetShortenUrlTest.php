@@ -13,15 +13,15 @@ class GetShortenUrlTest extends TestCase
     {
 
         $originalUrl = 'https://example.com';
-        $shortUrl = 'test';
+        $custom_alias = 'test';
 
         $this->postJson('/api/shorten', [ // seeding
             'original_url' => $originalUrl,
-            'short_url' => $shortUrl
+            'custom_alias' => $custom_alias
         ]);
 
 
-        $response = $this->get('/api/?short_url=' . $shortUrl);
+        $response = $this->get('/api/?custom_alias=' . $custom_alias);
 
         $response->assertStatus(200)
             // check the shape
@@ -36,50 +36,50 @@ class GetShortenUrlTest extends TestCase
             ->assertJsonPath('status', 'Success');
     }
 
-    public function test_too_few_short_url(): void
+    public function test_too_few_custom_alias(): void
     {
 
-        $tooFewShortUrl1 = 'in';
+        $tooFewCustomAlias = 'in';
 
-        $response = $this->get('/api/?short_url=' . $tooFewShortUrl1);
+        $response = $this->get('/api/?custom_alias=' . $tooFewCustomAlias);
 
         $response->assertStatus(422)
             ->assertJsonStructure([
                 'message',
                 'errors' => [
-                    'short_url'
+                    'custom_alias'
                 ]
             ]);
     }
 
-    public function test_too_long_short_url(): void
+    public function test_too_long_custom_alias(): void
     {
 
-        $tooLongShortUrl = str_repeat('a', 51); // 51 chars, exceeding the max length of 50
+        $tooLongCustomAlias = str_repeat('a', 51); // 51 chars, exceeding the max length of 50
 
-        $response = $this->get('/api/?short_url=' . $tooLongShortUrl);
+        $response = $this->get('/api/?custom_alias=' . $tooLongCustomAlias);
 
         $response->assertStatus(422)
             ->assertJsonStructure([
                 'message',
                 'errors' => [
-                    'short_url'
+                    'custom_alias'
                 ]
             ]);
     }
 
-    public function test_invalid_short_url(): void
+    public function test_invalid_custom_alias(): void
     {
 
-        $invalidShortUrl = '#$%&*';
+        $invalidCustomAlias = '#$%&*';
 
-        $response = $this->get('/api/?short_url=' . $invalidShortUrl);
+        $response = $this->get('/api/?custom_alias=' . $invalidCustomAlias);
 
         $response->assertStatus(422)
             ->assertJsonStructure([
                 'message',
                 'errors' => [
-                    'short_url'
+                    'custom_alias'
                 ]
             ]);
     }
@@ -87,9 +87,9 @@ class GetShortenUrlTest extends TestCase
     public function test_not_found(): void
     {
 
-        $notFoundShortUrl = 'non-existent';
+        $notFoundCustomAlias = 'non-existent';
 
-        $response = $this->get('/api/?short_url=' . $notFoundShortUrl);
+        $response = $this->get('/api/?custom_alias=' . $notFoundCustomAlias);
 
         $response->assertStatus(404)
             // check the shape

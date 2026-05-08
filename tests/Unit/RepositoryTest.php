@@ -23,16 +23,16 @@ class RepositoryTest extends TestCase
         $repository = new EloquentImplementation(); // directly using the Eloquent implementation for testing (instance)
 
         $originalUrl = 'https://url1.com';
-        $shortUrl = 'thisIsShortUrlUniqueTest';
+        $custom_alias = 'thisIsShortUrlUniqueTest';
 
         // Success case
-        $firstShortUrl = $repository->createShortedUrl($originalUrl, $shortUrl);
+        $firstShortUrl = $repository->createShortedUrl($originalUrl, $custom_alias);
         $this->assertNotNull($firstShortUrl);
-        $this->assertEquals($shortUrl, $firstShortUrl->short_url);
+        $this->assertEquals($custom_alias, $firstShortUrl->custom_alias);
 
         // Fail case
         $this->expectException(QueryException::class);
-        $repository->createShortedUrl('https://url2.com', $shortUrl);
+        $repository->createShortedUrl('https://url2.com', $custom_alias);
     }
 
     public function test_valid_url(): void
@@ -42,26 +42,26 @@ class RepositoryTest extends TestCase
 
         // Valid both URL case
         $validOriginalUrl = 'https://url1.com';
-        $validShortUrl = 'thisIsShortUrlTest';
+        $validCustomAlias = 'thisIsShortUrlTest';
 
-        $shortUrl = $repository->createShortedUrl($validOriginalUrl, $validShortUrl);
+        $shortUrl = $repository->createShortedUrl($validOriginalUrl, $validCustomAlias);
         $this->assertNotNull($shortUrl);
-        $this->assertEquals($validShortUrl, $shortUrl->short_url);
+        $this->assertEquals($validCustomAlias, $shortUrl->custom_alias);
 
-        // Invalid short URL case (null data)
-        $invalidShortUrl1 = '';
+        // Invalid custom alias case (null data)
+        $invalidCustomAlias1 = '';
         $this->expectException(QueryException::class);
-        $repository->createShortedUrl($validOriginalUrl, $invalidShortUrl1);
+        $repository->createShortedUrl($validOriginalUrl, $invalidCustomAlias1);
 
-        // Invalid short URL case (too long 51 chars), max 50
-        $invalidShortUrl2 = 'testLoremipsumdolorsitametconsecteturadipiscingelit';
+        // Invalid custom alias case (too long 51 chars), max 50
+        $invalidCustomAlias2 = 'testLoremipsumdolorsitametconsecteturadipiscingelit';
         $this->expectException(QueryException::class);
-        $repository->createShortedUrl($validOriginalUrl, $invalidShortUrl2);
+        $repository->createShortedUrl($validOriginalUrl, $invalidCustomAlias2);
 
         // Invalid original URL case (null data)
         $invalidOriginalUrl = '';
         $this->expectException(QueryException::class);
-        $repository->createShortedUrl($invalidOriginalUrl, $validShortUrl);
+        $repository->createShortedUrl($invalidOriginalUrl, $validCustomAlias);
     }
 
     /**
@@ -74,17 +74,17 @@ class RepositoryTest extends TestCase
         $repository = new EloquentImplementation(); // directly using the Eloquent implementation for testing (instance)
 
         $originalUrl = 'https://mockurl.com';
-        $shortUrl = 'thisIsShortUrlGetTest';
+        $custom_alias = 'thisIsShortUrlGetTest';
 
-        $repository->createShortedUrl($originalUrl, $shortUrl); // seeding
+        $repository->createShortedUrl($originalUrl, $custom_alias); // seeding
 
         // Success case
-        $queryResult = $repository->getOriginalUrl($shortUrl);
+        $queryResult = $repository->getOriginalUrl($custom_alias);
         $this->assertNotNull($queryResult);
         $this->assertEquals($originalUrl, $queryResult->original_url);
 
         // Not found case
-        $notFoundResult = $repository->getOriginalUrl('non-existent-short-url');
+        $notFoundResult = $repository->getOriginalUrl('non-existent-custom-alias');
         $this->assertEquals(null, $notFoundResult);
     }
 }

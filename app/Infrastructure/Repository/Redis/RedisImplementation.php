@@ -7,15 +7,15 @@ use Illuminate\Support\Facades\Redis;
 
 class RedisImplementation implements CacheInterface
 {
-    public function setCacheUrl(string $original_url, string $short_url): void
+    public function setCacheUrl(string $original_url, string $custom_alias): void
     {
         $ttl = 10 * 60; // Cache for 10 minutes
-        Redis::connection('default')->set("st:{$short_url}", $original_url, 'EX', $ttl);
+        Redis::connection('default')->set("ca:{$custom_alias}", $original_url, 'EX', $ttl);
     }
 
-    public function getCachedUrl(string $short_url): string
+    public function getCachedUrl(string $custom_alias): string
     {
-        $cachedData = Redis::connection('default')->get("st:{$short_url}");
+        $cachedData = Redis::connection('default')->get("ca:{$custom_alias}");
 
         if (!$cachedData) {
             return '';
